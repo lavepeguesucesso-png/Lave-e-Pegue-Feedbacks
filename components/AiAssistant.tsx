@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { NpsRecord, ChatMessage } from '../types';
 import { analyzeData } from '../services/geminiService';
@@ -22,13 +23,12 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
     }
   }, [messages]);
 
-  const hasApiKey = !!process.env.API_KEY;
-
   const handleSend = async () => {
     if (!input.trim()) return;
     
-    if (!hasApiKey) {
-        setError("API Key is missing. Please set API_KEY in your environment settings.");
+    // Check for API key availability via simple check (in real app, use a more robust check)
+    if (!process.env.API_KEY) {
+        setError("API Key is missing. Please check your configuration.");
         return;
     }
 
@@ -40,7 +40,7 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
 
     try {
       const responseText = await analyzeData(records, userMsg.text);
-      const botMsg: ChatMessage = { role: 'model', text: responseText || "Desculpe, não consegui gerar uma resposta.", timestamp: new Date() };
+      const botMsg: ChatMessage = { role: 'model', text: responseText, timestamp: new Date() };
       setMessages(prev => [...prev, botMsg]);
     } catch (err) {
       setError("Failed to get a response. Please try again.");
@@ -50,8 +50,8 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
   };
 
   const handleGenerateSummary = async () => {
-    if (!hasApiKey) {
-        setError("API Key is missing. Please set API_KEY in your environment settings.");
+    if (!process.env.API_KEY) {
+        setError("API Key is missing. Please check your configuration.");
         return;
     }
 
@@ -64,7 +64,7 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
 
     try {
       const responseText = await analyzeData(records, summaryPrompt);
-      const botMsg: ChatMessage = { role: 'model', text: responseText || "Desculpe, não consegui gerar o resumo.", timestamp: new Date() };
+      const botMsg: ChatMessage = { role: 'model', text: responseText, timestamp: new Date() };
       setMessages(prev => [...prev, botMsg]);
     } catch (err) {
       setError("Failed to generate summary. Please try again.");
@@ -81,15 +81,15 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
   ];
 
   return (
-    <div className="bg-[#1e1235]/80 backdrop-blur-md rounded-xl shadow-lg border border-white/10 flex flex-col h-[650px] overflow-hidden">
-      <div className="p-4 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-fuchsia-900/40 to-purple-900/40">
+    <div className="bg-white dark:bg-[#1e1235]/80 backdrop-blur-md rounded-xl shadow-lg border border-slate-200 dark:border-white/10 flex flex-col h-[650px] overflow-hidden">
+      <div className="p-4 border-b border-slate-200 dark:border-white/10 flex items-center justify-between bg-gradient-to-r from-fuchsia-100 to-purple-100 dark:from-fuchsia-900/40 dark:to-purple-900/40">
         <div className="flex items-center gap-3">
-            <div className="p-2 bg-fuchsia-500/20 border border-fuchsia-500/50 rounded-lg text-fuchsia-400">
+            <div className="p-2 bg-fuchsia-500/20 border border-fuchsia-500/50 rounded-lg text-fuchsia-600 dark:text-fuchsia-400">
                 <Sparkles className="w-5 h-5" />
             </div>
             <div>
-                <h2 className="text-lg font-semibold text-white">AI Data Analyst</h2>
-                <p className="text-xs text-purple-300/60">Powered by Gemini</p>
+                <h2 className="text-lg font-semibold text-slate-800 dark:text-white">AI Data Analyst</h2>
+                <p className="text-xs text-slate-500 dark:text-purple-300/60">Powered by Gemini</p>
             </div>
         </div>
       </div>
@@ -97,13 +97,13 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
       <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar" ref={scrollRef}>
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border border-white/10 ${msg.role === 'user' ? 'bg-white/10' : 'bg-fuchsia-600 text-white'}`}>
-              {msg.role === 'user' ? <User className="w-4 h-4 text-white" /> : <Bot className="w-4 h-4" />}
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border border-white/10 ${msg.role === 'user' ? 'bg-slate-200 dark:bg-white/10' : 'bg-fuchsia-600 text-white'}`}>
+              {msg.role === 'user' ? <User className="w-4 h-4 text-slate-600 dark:text-white" /> : <Bot className="w-4 h-4" />}
             </div>
             <div className={`max-w-[80%] rounded-2xl p-4 text-sm leading-relaxed ${
               msg.role === 'user' 
                 ? 'bg-purple-600/80 text-white rounded-tr-none shadow-lg' 
-                : 'bg-[#2a1b3d] border border-white/10 text-gray-200 rounded-tl-none shadow-sm'
+                : 'bg-slate-100 dark:bg-[#2a1b3d] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-gray-200 rounded-tl-none shadow-sm'
             }`}>
                {msg.text.split('\n').map((line, i) => (
                  <p key={i} className={line.startsWith('-') || line.startsWith('*') ? 'ml-4' : 'mb-2'}>{line}</p>
@@ -119,7 +119,7 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
              <div className="w-8 h-8 rounded-full bg-fuchsia-600 text-white flex items-center justify-center flex-shrink-0 animate-pulse">
                 <Sparkles className="w-4 h-4" />
              </div>
-             <div className="bg-[#2a1b3d] border border-white/10 rounded-2xl rounded-tl-none p-4 shadow-sm flex items-center gap-2">
+             <div className="bg-slate-100 dark:bg-[#2a1b3d] border border-slate-200 dark:border-white/10 rounded-2xl rounded-tl-none p-4 shadow-sm flex items-center gap-2">
                 <div className="w-2 h-2 bg-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                 <div className="w-2 h-2 bg-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                 <div className="w-2 h-2 bg-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -128,7 +128,7 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
         )}
         {error && (
             <div className="flex justify-center my-4">
-                <div className="bg-red-500/20 text-red-300 px-4 py-2 rounded-lg text-sm flex items-center gap-2 border border-red-500/30">
+                <div className="bg-red-500/20 text-red-600 dark:text-red-300 px-4 py-2 rounded-lg text-sm flex items-center gap-2 border border-red-500/30">
                     <AlertCircle className="w-4 h-4" />
                     {error}
                 </div>
@@ -136,13 +136,13 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
         )}
       </div>
 
-      <div className="p-4 border-t border-white/10 bg-[#150a25]">
+      <div className="p-4 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#150a25]">
         <div className="flex flex-col gap-3">
             {/* Quick Action Button for Sentiment Summary */}
             {!loading && messages.length < 5 && (
                 <button 
                     onClick={handleGenerateSummary}
-                    className="flex items-center justify-center gap-2 w-full py-2 bg-gradient-to-r from-fuchsia-900/50 to-purple-900/50 border border-fuchsia-500/30 rounded-lg text-fuchsia-200 text-xs font-semibold uppercase tracking-wider hover:bg-fuchsia-800/50 transition-all shadow-[0_0_10px_rgba(217,70,239,0.1)] hover:shadow-[0_0_15px_rgba(217,70,239,0.3)] mb-1"
+                    className="flex items-center justify-center gap-2 w-full py-2 bg-gradient-to-r from-fuchsia-100 to-purple-100 dark:from-fuchsia-900/50 dark:to-purple-900/50 border border-fuchsia-200 dark:border-fuchsia-500/30 rounded-lg text-fuchsia-700 dark:text-fuchsia-200 text-xs font-semibold uppercase tracking-wider hover:bg-fuchsia-200 dark:hover:bg-fuchsia-800/50 transition-all shadow-[0_0_10px_rgba(217,70,239,0.1)] hover:shadow-[0_0_15px_rgba(217,70,239,0.3)] mb-1"
                 >
                     <BrainCircuit className="w-4 h-4" />
                     Gerar Resumo Geral de Sentimentos
@@ -156,7 +156,7 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
                         <button 
                             key={i}
                             onClick={() => setInput(s)}
-                            className="whitespace-nowrap px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-xs text-purple-200 hover:bg-fuchsia-600/20 hover:border-fuchsia-500 hover:text-white transition-colors"
+                            className="whitespace-nowrap px-3 py-1.5 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full text-xs text-slate-600 dark:text-purple-200 hover:bg-fuchsia-50 dark:hover:bg-fuchsia-600/20 hover:border-fuchsia-500 hover:text-fuchsia-700 dark:hover:text-white transition-colors"
                         >
                             {s}
                         </button>
@@ -171,7 +171,7 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                     placeholder="Pergunte algo sobre seus dados..."
-                    className="flex-1 px-4 py-2.5 bg-[#2a1b3d] border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 text-sm text-white placeholder-white/30 shadow-inner"
+                    className="flex-1 px-4 py-2.5 bg-white dark:bg-[#2a1b3d] border border-slate-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 text-sm text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-white/30 shadow-inner"
                 />
                 <button 
                     onClick={handleSend}

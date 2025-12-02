@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { NpsRecord } from '../types';
 import { Search, Filter, ChevronDown } from 'lucide-react';
@@ -46,25 +47,25 @@ export const FeedbackList: React.FC<FeedbackListProps> = ({ records }) => {
   };
 
   return (
-    <div className="bg-[#1e1235]/80 backdrop-blur-md rounded-xl shadow-lg border border-white/10 flex flex-col h-[650px] overflow-hidden transition-all duration-500">
+    <div className="bg-white dark:bg-[#1e1235]/80 backdrop-blur-md rounded-xl shadow-lg border border-slate-200 dark:border-white/10 flex flex-col h-[650px] overflow-hidden transition-all duration-500">
       
       {/* Header Controls */}
-      <div className="p-4 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 bg-fuchsia-900/20">
-         <h2 className="text-lg font-semibold text-fuchsia-300">Justificativas e Feedbacks</h2>
+      <div className="p-4 border-b border-slate-200 dark:border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 bg-fuchsia-50 dark:bg-fuchsia-900/20">
+         <h2 className="text-lg font-semibold text-fuchsia-600 dark:text-fuchsia-300">Justificativas e Feedbacks</h2>
          <div className="flex gap-2 w-full md:w-auto flex-wrap">
              <div className="relative flex-1 md:flex-none min-w-[200px]">
                  <input 
                     type="text" 
                     placeholder="Buscar..." 
-                    className="w-full bg-[#150a25] border border-white/10 rounded-lg py-2 pl-3 pr-8 text-sm text-white focus:outline-none focus:border-fuchsia-500"
+                    className="w-full bg-white dark:bg-[#150a25] border border-slate-200 dark:border-white/10 rounded-lg py-2 pl-3 pr-8 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-fuchsia-500"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                  />
-                 <Search className="absolute right-2 top-2.5 w-4 h-4 text-white/40" />
+                 <Search className="absolute right-2 top-2.5 w-4 h-4 text-slate-400 dark:text-white/40" />
              </div>
              
              <select 
-                className="bg-[#150a25] border border-white/10 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:border-fuchsia-500"
+                className="bg-white dark:bg-[#150a25] border border-slate-200 dark:border-white/10 rounded-lg py-2 px-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-fuchsia-500"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as any)}
              >
@@ -75,7 +76,7 @@ export const FeedbackList: React.FC<FeedbackListProps> = ({ records }) => {
              </select>
 
              <select 
-                className="bg-[#150a25] border border-white/10 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:border-fuchsia-500"
+                className="bg-white dark:bg-[#150a25] border border-slate-200 dark:border-white/10 rounded-lg py-2 px-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-fuchsia-500"
                 value={scoreFilter}
                 onChange={(e) => setScoreFilter(e.target.value)}
              >
@@ -96,7 +97,7 @@ export const FeedbackList: React.FC<FeedbackListProps> = ({ records }) => {
          </div>
       </div>
 
-      <div className="grid grid-cols-12 bg-gradient-to-r from-fuchsia-900/80 to-cyan-900/80 text-white font-bold text-xs uppercase tracking-wider py-3 px-4 shadow-md z-10">
+      <div className="grid grid-cols-12 bg-gradient-to-r from-fuchsia-100 to-cyan-100 dark:from-fuchsia-900/80 dark:to-cyan-900/80 text-slate-700 dark:text-white font-bold text-xs uppercase tracking-wider py-3 px-4 shadow-md z-10">
           <div className="col-span-4">Unidade</div>
           <div className="col-span-3">Nome</div>
           <div className="col-span-4">Justificativa</div>
@@ -108,36 +109,36 @@ export const FeedbackList: React.FC<FeedbackListProps> = ({ records }) => {
         data-export-scroll="true"
       >
         {visibleRecords.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-white/30">
+            <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-white/30">
                 <Filter className="w-12 h-12 mb-2 opacity-20" />
                 <p>Nenhum registro encontrado.</p>
             </div>
         ) : (
-            <div className="divide-y divide-white/5">
+            <div className="divide-y divide-slate-100 dark:divide-white/5">
                 {visibleRecords.map((record, idx) => (
-                    <div key={`${record.respondentId}-${idx}`} className="grid grid-cols-12 py-4 px-4 hover:bg-white/5 transition-colors text-sm items-start group">
+                    <div key={`${record.respondentId}-${idx}`} className="grid grid-cols-12 py-4 px-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-sm items-start group">
                         <div className="col-span-4 pr-2">
-                             <div className="text-white/90 font-medium break-words">
+                             <div className="text-slate-800 dark:text-white/90 font-medium break-words">
                                 {record.unitName}
                              </div>
-                             <div className="text-[10px] text-fuchsia-300/60 mt-1">{record.unitZone}</div>
+                             <div className="text-[10px] text-fuchsia-500 dark:text-fuchsia-300/60 mt-1">{record.unitZone}</div>
                         </div>
                         <div className="col-span-3 pr-2">
-                            <div className="text-white/70 break-words">{record.respondentName}</div>
-                            <div className="text-[10px] text-white/30 mt-1">{record.responseDate}</div>
+                            <div className="text-slate-600 dark:text-white/70 break-words">{record.respondentName}</div>
+                            <div className="text-[10px] text-slate-400 dark:text-white/30 mt-1">{record.responseDate}</div>
                         </div>
                         <div className="col-span-4 pr-2">
                              {record.justification ? (
-                                <p className="text-white/80 italic text-xs leading-relaxed whitespace-pre-wrap break-words bg-white/5 p-2 rounded-lg border border-white/5">
+                                <p className="text-slate-700 dark:text-white/80 italic text-xs leading-relaxed whitespace-pre-wrap break-words bg-slate-50 dark:bg-white/5 p-2 rounded-lg border border-slate-100 dark:border-white/5">
                                     "{record.justification}"
                                 </p>
                              ) : (
-                                <span className="text-white/20 text-xs py-1 block">Sem comentário</span>
+                                <span className="text-slate-300 dark:text-white/20 text-xs py-1 block">Sem comentário</span>
                              )}
                         </div>
                         <div className="col-span-1 flex justify-end">
                             {isNaN(record.score) ? (
-                                <div className="px-2 py-1 rounded bg-white/5 border border-white/10 text-[10px] text-white/40 whitespace-nowrap">
+                                <div className="px-2 py-1 rounded bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] text-slate-400 dark:text-white/40 whitespace-nowrap">
                                     -
                                 </div>
                             ) : (
@@ -155,7 +156,7 @@ export const FeedbackList: React.FC<FeedbackListProps> = ({ records }) => {
                     <div className="p-4 flex justify-center">
                         <button 
                             onClick={handleShowMore}
-                            className="flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-xs text-white/70 hover:text-white transition-all"
+                            className="flex items-center gap-2 px-6 py-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-full text-xs text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-all"
                         >
                             <ChevronDown className="w-4 h-4" />
                             Carregar mais ({filtered.length - visibleCount} restantes)
@@ -166,7 +167,7 @@ export const FeedbackList: React.FC<FeedbackListProps> = ({ records }) => {
         )}
       </div>
       
-      <div className="bg-fuchsia-900/30 border-t border-white/10 p-2 text-center text-[10px] text-fuchsia-200/50">
+      <div className="bg-fuchsia-50 dark:bg-fuchsia-900/30 border-t border-slate-200 dark:border-white/10 p-2 text-center text-[10px] text-fuchsia-600/50 dark:text-fuchsia-200/50">
          Exibindo {visibleRecords.length} de {filtered.length} registros • LAVE & PEGUE LAVANDERIA
       </div>
     </div>

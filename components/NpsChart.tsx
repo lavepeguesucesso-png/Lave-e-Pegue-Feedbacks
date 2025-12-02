@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Sector } from 'recharts';
 import { NpsCycleStats } from '../types';
@@ -6,6 +7,7 @@ interface NpsChartProps {
   stats: NpsCycleStats;
   distribution?: { score: number; count: number }[];
   trendData?: any[];
+  isDarkMode?: boolean;
 }
 
 const NEON_GREEN = '#4ade80';
@@ -63,17 +65,17 @@ export const NpsGauge: React.FC<{ score: number }> = ({ score }) => {
             
             {/* Needle */}
             <div 
-                className="absolute top-[70%] left-1/2 w-[110px] h-[4px] bg-white origin-left rounded-full shadow-[0_0_10px_white] transition-all duration-1000 ease-out"
+                className="absolute top-[70%] left-1/2 w-[110px] h-[4px] bg-slate-800 dark:bg-white origin-left rounded-full shadow-[0_0_10px_rgba(0,0,0,0.2)] dark:shadow-[0_0_10px_white] transition-all duration-1000 ease-out"
                 style={{ transform: `rotate(${rotation}deg) translateY(-50%)` }}
             >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg"></div>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-slate-800 dark:bg-white rounded-full shadow-lg"></div>
             </div>
 
             <div className="absolute top-[55%] text-center">
                 <span className={`text-5xl font-bold drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] ${
-                    score >= 75 ? 'text-green-400' :
-                    score >= 50 ? 'text-cyan-400' :
-                    score >= 0 ? 'text-yellow-400' : 'text-red-400'
+                    score >= 75 ? 'text-green-500 dark:text-green-400' :
+                    score >= 50 ? 'text-cyan-500 dark:text-cyan-400' :
+                    score >= 0 ? 'text-yellow-500 dark:text-yellow-400' : 'text-red-500 dark:text-red-400'
                 }`}>
                     {score.toFixed(2).replace('.', ',')}
                 </span>
@@ -83,7 +85,7 @@ export const NpsGauge: React.FC<{ score: number }> = ({ score }) => {
                 <span>100</span>
             </div>
             {/* Zone Label */}
-            <div className="absolute bottom-0 text-xs uppercase tracking-widest text-white/50">
+            <div className="absolute bottom-0 text-xs uppercase tracking-widest text-slate-500 dark:text-white/50">
                 {score >= 75 ? 'Zona de Excelência' :
                  score >= 50 ? 'Zona de Qualidade' :
                  score >= 0 ? 'Zona de Aperfeiçoamento' : 'Zona Crítica'}
@@ -98,10 +100,10 @@ const renderActiveShape = (props: any) => {
 
   return (
     <g>
-      <text x={cx} y={cy - 10} dy={8} textAnchor="middle" fill="#fff" className="text-xl font-bold">
+      <text x={cx} y={cy - 10} dy={8} textAnchor="middle" fill={fill} className="text-xl font-bold">
         {payload.name}
       </text>
-      <text x={cx} y={cy + 15} dy={8} textAnchor="middle" fill="#ffffff80" className="text-sm">
+      <text x={cx} y={cy + 15} dy={8} textAnchor="middle" fill="#888" className="text-sm">
         {`${(percent * 100).toFixed(1)}%`}
       </text>
       <Sector
@@ -112,7 +114,7 @@ const renderActiveShape = (props: any) => {
         startAngle={startAngle}
         endAngle={endAngle}
         fill={fill}
-        className="drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+        className="drop-shadow-md"
       />
       <Sector
         cx={cx}
@@ -128,7 +130,7 @@ const renderActiveShape = (props: any) => {
   );
 };
 
-export const NpsDonutChart: React.FC<NpsChartProps> = ({ stats }) => {
+export const NpsDonutChart: React.FC<NpsChartProps> = ({ stats, isDarkMode }) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const onPieEnter = (_: any, index: number) => {
@@ -150,8 +152,6 @@ export const NpsDonutChart: React.FC<NpsChartProps> = ({ stats }) => {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                activeIndex={activeIndex}
-                activeShape={renderActiveShape}
                 data={data}
                 cx="50%"
                 cy="50%"
@@ -161,6 +161,7 @@ export const NpsDonutChart: React.FC<NpsChartProps> = ({ stats }) => {
                 dataKey="value"
                 stroke="none"
                 onMouseEnter={onPieEnter}
+                {...({ activeIndex, activeShape: renderActiveShape } as any)}
               >
                 <Cell fill={NEON_RED} />
                 <Cell fill={NEON_YELLOW} />
@@ -173,43 +174,43 @@ export const NpsDonutChart: React.FC<NpsChartProps> = ({ stats }) => {
       {/* Custom Legend (Interactive) */}
        <div className="flex flex-col gap-4 w-48 pr-4">
             <div 
-                className={`flex items-center justify-between p-3 rounded-xl border relative overflow-hidden group transition-all cursor-pointer ${activeIndex === 2 ? 'bg-green-500/20 border-green-500 shadow-[0_0_15px_rgba(74,222,128,0.3)]' : 'bg-green-500/10 border-green-500/30'}`}
+                className={`flex items-center justify-between p-3 rounded-xl border relative overflow-hidden group transition-all cursor-pointer ${activeIndex === 2 ? 'bg-green-100 dark:bg-green-500/20 border-green-500 dark:border-green-500 shadow-md' : 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/30'}`}
                 onMouseEnter={() => setActiveIndex(2)}
             >
                 <div className="absolute inset-0 bg-green-500/5 group-hover:bg-green-500/10 transition-colors"></div>
                 <div className="relative z-10 flex flex-col">
-                     <span className="text-green-400 text-xs font-bold uppercase tracking-wider">Promotor</span>
-                     <span className="text-white font-bold text-lg">{stats.countPromoters}</span>
+                     <span className="text-green-600 dark:text-green-400 text-xs font-bold uppercase tracking-wider">Promotor</span>
+                     <span className="text-slate-800 dark:text-white font-bold text-lg">{stats.countPromoters}</span>
                 </div>
-                <div className="relative z-10 text-green-300 text-sm font-medium">
+                <div className="relative z-10 text-green-700 dark:text-green-300 text-sm font-medium">
                     {total > 0 ? ((stats.countPromoters/total)*100).toFixed(1) : 0}%
                 </div>
             </div>
 
             <div 
-                className={`flex items-center justify-between p-3 rounded-xl border relative overflow-hidden group transition-all cursor-pointer ${activeIndex === 1 ? 'bg-yellow-500/20 border-yellow-500 shadow-[0_0_15px_rgba(250,204,21,0.3)]' : 'bg-yellow-500/10 border-yellow-500/30'}`}
+                className={`flex items-center justify-between p-3 rounded-xl border relative overflow-hidden group transition-all cursor-pointer ${activeIndex === 1 ? 'bg-yellow-100 dark:bg-yellow-500/20 border-yellow-500 dark:border-yellow-500 shadow-md' : 'bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-500/30'}`}
                 onMouseEnter={() => setActiveIndex(1)}
             >
                  <div className="absolute inset-0 bg-yellow-500/5 group-hover:bg-yellow-500/10 transition-colors"></div>
                  <div className="relative z-10 flex flex-col">
-                     <span className="text-yellow-400 text-xs font-bold uppercase tracking-wider">Neutro</span>
-                     <span className="text-white font-bold text-lg">{stats.countNeutrals}</span>
+                     <span className="text-yellow-600 dark:text-yellow-400 text-xs font-bold uppercase tracking-wider">Neutro</span>
+                     <span className="text-slate-800 dark:text-white font-bold text-lg">{stats.countNeutrals}</span>
                 </div>
-                <div className="relative z-10 text-yellow-300 text-sm font-medium">
+                <div className="relative z-10 text-yellow-700 dark:text-yellow-300 text-sm font-medium">
                     {total > 0 ? ((stats.countNeutrals/total)*100).toFixed(1) : 0}%
                 </div>
             </div>
 
             <div 
-                className={`flex items-center justify-between p-3 rounded-xl border relative overflow-hidden group transition-all cursor-pointer ${activeIndex === 0 ? 'bg-red-500/20 border-red-500 shadow-[0_0_15px_rgba(248,113,113,0.3)]' : 'bg-red-500/10 border-red-500/30'}`}
+                className={`flex items-center justify-between p-3 rounded-xl border relative overflow-hidden group transition-all cursor-pointer ${activeIndex === 0 ? 'bg-red-100 dark:bg-red-500/20 border-red-500 dark:border-red-500 shadow-md' : 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30'}`}
                 onMouseEnter={() => setActiveIndex(0)}
             >
                  <div className="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors"></div>
                  <div className="relative z-10 flex flex-col">
-                     <span className="text-red-400 text-xs font-bold uppercase tracking-wider">Detrator</span>
-                     <span className="text-white font-bold text-lg">{stats.countDetractors}</span>
+                     <span className="text-red-600 dark:text-red-400 text-xs font-bold uppercase tracking-wider">Detrator</span>
+                     <span className="text-slate-800 dark:text-white font-bold text-lg">{stats.countDetractors}</span>
                 </div>
-                <div className="relative z-10 text-red-300 text-sm font-medium">
+                <div className="relative z-10 text-red-700 dark:text-red-300 text-sm font-medium">
                     {total > 0 ? ((stats.countDetractors/total)*100).toFixed(1) : 0}%
                 </div>
             </div>
@@ -219,7 +220,7 @@ export const NpsDonutChart: React.FC<NpsChartProps> = ({ stats }) => {
 };
 
 // Detailed Tooltip for Histogram
-const HistogramTooltip = ({ active, payload, label, total }: any) => {
+const HistogramTooltip = ({ active, payload, label, total, isDarkMode }: any) => {
     if (active && payload && payload.length) {
         const count = payload[0].value;
         const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
@@ -231,17 +232,17 @@ const HistogramTooltip = ({ active, payload, label, total }: any) => {
         else color = NEON_GREEN;
 
         return (
-            <div className="bg-[#1a1025] border border-white/20 p-3 rounded-lg shadow-2xl backdrop-blur-xl">
-                <p className="font-bold text-white mb-1 flex items-center gap-2">
+            <div className={`p-3 rounded-lg shadow-2xl backdrop-blur-xl ${isDarkMode ? 'bg-[#1a1025] border border-white/20' : 'bg-white border border-slate-200'}`}>
+                <p className={`font-bold mb-1 flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>
                     <span className="w-2 h-2 rounded-full" style={{ background: color }}></span>
                     Nota {label}
                 </p>
                 <div className="flex items-end gap-2 text-sm">
-                    <span className="text-2xl font-bold text-white">{count}</span>
-                    <span className="text-white/50 mb-1">votos</span>
+                    <span className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{count}</span>
+                    <span className={`${isDarkMode ? 'text-white/50' : 'text-slate-500'} mb-1`}>votos</span>
                 </div>
-                <div className="text-xs text-white/70 mt-1 border-t border-white/10 pt-1">
-                    Representa <span className="text-fuchsia-300 font-bold">{percentage}%</span> do total
+                <div className={`text-xs mt-1 border-t pt-1 ${isDarkMode ? 'text-white/70 border-white/10' : 'text-slate-500 border-slate-100'}`}>
+                    Representa <span className="text-fuchsia-500 font-bold">{percentage}%</span> do total
                 </div>
             </div>
         );
@@ -249,30 +250,30 @@ const HistogramTooltip = ({ active, payload, label, total }: any) => {
     return null;
 };
 
-export const ScoreHistogram: React.FC<{ data: { score: number; count: number }[], total: number }> = ({ data, total }) => {
+export const ScoreHistogram: React.FC<{ data: { score: number; count: number }[], total: number, isDarkMode?: boolean }> = ({ data, total, isDarkMode }) => {
     const sortedData = [...data].sort((a, b) => a.score - b.score);
 
     return (
         <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={sortedData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff10" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDarkMode ? "#ffffff10" : "#00000010"} />
                     <XAxis 
                         dataKey="score" 
-                        stroke="#ffffff50" 
-                        tick={{fill: '#ffffff50', fontSize: 12}} 
+                        stroke={isDarkMode ? "#ffffff50" : "#64748b"} 
+                        tick={{fill: isDarkMode ? '#ffffff50' : '#64748b', fontSize: 12}} 
                         tickLine={false} 
                         axisLine={false} 
                     />
                     <YAxis 
-                        stroke="#ffffff50" 
-                        tick={{fill: '#ffffff50', fontSize: 12}} 
+                        stroke={isDarkMode ? "#ffffff50" : "#64748b"} 
+                        tick={{fill: isDarkMode ? '#ffffff50' : '#64748b', fontSize: 12}} 
                         tickLine={false} 
                         axisLine={false} 
                     />
                     <Tooltip 
-                        content={<HistogramTooltip total={total} />}
-                        cursor={{fill: '#ffffff10'}}
+                        content={<HistogramTooltip total={total} isDarkMode={isDarkMode} />}
+                        cursor={{fill: isDarkMode ? '#ffffff10' : '#00000005'}}
                     />
                     <Bar 
                         dataKey="count" 
@@ -310,9 +311,9 @@ export const NpsScale: React.FC = () => {
                 <div className="flex-1 bg-[#22c55e] flex items-center justify-center hover:brightness-110 transition-all cursor-crosshair">10</div>
             </div>
             <div className="flex justify-between mt-2 text-xs uppercase tracking-wider font-semibold">
-                <span className="text-red-400 pl-4">Detrator (0-6)</span>
-                <span className="text-yellow-400">Neutro (7-8)</span>
-                <span className="text-green-400 pr-4">Promotor (9-10)</span>
+                <span className="text-red-500 dark:text-red-400 pl-4">Detrator (0-6)</span>
+                <span className="text-yellow-500 dark:text-yellow-400">Neutro (7-8)</span>
+                <span className="text-green-500 dark:text-green-400 pr-4">Promotor (9-10)</span>
             </div>
         </div>
     );
