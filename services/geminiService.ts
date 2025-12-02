@@ -2,9 +2,11 @@ import { GoogleGenAI } from "@google/genai";
 import { NpsRecord } from "../types";
 
 const createClient = () => {
+  // Guidelines require using process.env.API_KEY exclusively
   const apiKey = process.env.API_KEY;
+  
   if (!apiKey) {
-    throw new Error("API Key not found");
+    throw new Error("API Key not found. Please set API_KEY in your environment variables.");
   }
   return new GoogleGenAI({ apiKey });
 };

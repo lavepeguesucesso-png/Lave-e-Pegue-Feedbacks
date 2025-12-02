@@ -22,12 +22,13 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
     }
   }, [messages]);
 
+  const hasApiKey = !!process.env.API_KEY;
+
   const handleSend = async () => {
     if (!input.trim()) return;
     
-    // Check for API key availability via simple check (in real app, use a more robust check)
-    if (!process.env.API_KEY) {
-        setError("API Key is missing. Please check your configuration.");
+    if (!hasApiKey) {
+        setError("API Key is missing. Please set API_KEY in your environment settings.");
         return;
     }
 
@@ -39,7 +40,7 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
 
     try {
       const responseText = await analyzeData(records, userMsg.text);
-      const botMsg: ChatMessage = { role: 'model', text: responseText, timestamp: new Date() };
+      const botMsg: ChatMessage = { role: 'model', text: responseText || "Desculpe, não consegui gerar uma resposta.", timestamp: new Date() };
       setMessages(prev => [...prev, botMsg]);
     } catch (err) {
       setError("Failed to get a response. Please try again.");
@@ -49,8 +50,8 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
   };
 
   const handleGenerateSummary = async () => {
-    if (!process.env.API_KEY) {
-        setError("API Key is missing. Please check your configuration.");
+    if (!hasApiKey) {
+        setError("API Key is missing. Please set API_KEY in your environment settings.");
         return;
     }
 
@@ -63,7 +64,7 @@ export const AiAssistant: React.FC<AiAssistantProps> = ({ records }) => {
 
     try {
       const responseText = await analyzeData(records, summaryPrompt);
-      const botMsg: ChatMessage = { role: 'model', text: responseText, timestamp: new Date() };
+      const botMsg: ChatMessage = { role: 'model', text: responseText || "Desculpe, não consegui gerar o resumo.", timestamp: new Date() };
       setMessages(prev => [...prev, botMsg]);
     } catch (err) {
       setError("Failed to generate summary. Please try again.");
