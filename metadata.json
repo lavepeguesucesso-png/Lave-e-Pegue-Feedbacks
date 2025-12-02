@@ -1,0 +1,5 @@
+{
+  "name": "NPS Analyzer Pro",
+  "description": "A comprehensive Net Promoter Score analysis tool featuring data visualization, sentiment analysis, and AI-driven insights using the Gemini API.",
+  "requestFramePermissions": []
+}
